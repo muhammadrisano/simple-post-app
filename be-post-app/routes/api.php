@@ -18,7 +18,7 @@ Route::post('/logout', LogoutController::class)->middleware('auth:sanctum');
 Route::apiResource('/post-categories', PostCategoryController::class);
 
 // posts
-Route::apiResource('/posts', PostController::class);
+Route::apiResource('/posts', PostController::class)->middleware('auth:sanctum');
 
 
 Route::get('/user', function (Request $request) {
