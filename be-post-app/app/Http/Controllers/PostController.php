@@ -4,18 +4,29 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\PostResource;
 use App\Models\Post;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
 class PostController extends Controller
 {
+    use AuthorizesRequests;
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-       $posts = Post::latest()->get();
-       return PostResource::collection($posts);
+        $limit = $request->query('limit', 5);
+        $searchTerm = $request->query('search');
+
+        $posts = Post::with('category')
+        ->when($searchTerm, function ($query, $searchTerm) {
+            return $query->where('title', 'ilike', '%' . $searchTerm . '%');
+        })
+        ->latest()
+        ->paginate($limit)
+        ->withQueryString();
+        return PostResource::collection($posts);
     }
 
     /**
@@ -61,14 +72,15 @@ class PostController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $slug)
+    public function update(Request $request, string $id)
     {
         $data = $request->validate([
             'title' => 'required|string',
             'description' => 'required|string',
             'category_id' => 'required|exists:post_categories,id',
         ]);
-        $post = Post::where(['slug' => $slug])->first();
+        $post = Post::find($id);
+        $this->authorize('update', $post);
         if (!$post) {
             return response()->json([
                 'message' => 'Post not found',
@@ -91,9 +103,11 @@ class PostController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $slug)
+    public function destroy(string $id)
     {
-        $post = Post::where(['slug' => $slug])->first();
+        
+        $post = Post::find($id);
+        $this->authorize('delete', $post);
         if (!$post) {
             return response()->json([
                 'message' => 'Post not found',
