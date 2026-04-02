@@ -3,7 +3,7 @@ import React from "react";
 import useSWR from 'swr'
 import { zodResolver } from "@hookform/resolvers/zod";
 import {Input, Select} from "@/components/attoms";
-import { postSchema, PostSchema } from "@/utils/schema/post";
+import { PostSchema, updatePostSchema, UpdatePostSchema } from "@/utils/schema/post";
 import { useForm } from "react-hook-form";
 import {
   Form,
@@ -16,15 +16,18 @@ import {
 import { useRouter } from "next/navigation";
 import { ModalProps } from "@/components/molecules/Modal";
 import { Button } from "@/components/attoms";
-import { createPost } from "@/service/post.service";
+import { getPostDetails, updatePost } from "@/service/post.service";
 import {Category, getCategory} from '@/service/category.service'
+import { useParams } from 'next/navigation';
 
 
-const NewPostPage = () => {
+const EditPostPage = () => {
   const router = useRouter();
+  const params = useParams();
   const { data: categories} = useSWR({}, getCategory)
+
   const listCategory = categories?.data.map((category:Category)=>({
-    value: category.id,
+    value: `${category.id}`,
     label: category.name
   })) || []
   const [modal, setModal] = React.useState<ModalProps>({
@@ -33,30 +36,39 @@ const NewPostPage = () => {
     btnName: "",
     btnShow: false,
   });
-  const form = useForm<PostSchema>({
-    resolver: zodResolver(postSchema),
-    defaultValues: {
-      title: "",
-      description: "",
-      category_id: "",
+  const form = useForm<UpdatePostSchema>({
+    resolver: zodResolver(updatePostSchema),
+    defaultValues: async()=> {
+      const dataPost = await getPostDetails(params?.slug as string)
+      return {
+        id: dataPost?.data.id,
+        title: dataPost?.data.title,
+        description: dataPost?.data.description,
+        category_id: `${dataPost?.data.category.id}`,
+      }
     },
   });
-  const submitForm = async (data: PostSchema) => {
+  const submitForm = async ({id, ...data}: PostSchema & { id: number }) => {
     try {
-      await createPost(data);
+      await updatePost(id, data);
       setModal({
-        title: "Create Post Success",
-        description: "Selamat Anda sudah berhasil membuat post baru",
+        title: "Update Post Success",
+        description: "Selamat Anda sudah berhasil mengupdate post",
         btnName: "Kembali ke Dashboard",
         btnShow: true,
-        onClick: () => router.push("/dashboard"),
+        onClick: () => router.push(`/dashboard/post/${params.slug}`),
       });
       (document.getElementById("my_modal") as HTMLDialogElement)?.showModal();
     } catch (error) {
-      console.log(error);
+       let errorDescription = ''
+         if (error instanceof Response) {
+         const resError = await error.json() as { message: string };
+         errorDescription = resError.message
+         
+       }
       setModal({
-        title: "Create Post Fail",
-        description: "Silahkan Coba Kembali",
+        title: "Update Post Fail",
+        description: errorDescription ||"Silahkan Coba Kembali",
         btnName: "Close",
         btnShow: true,
       });
@@ -65,7 +77,7 @@ const NewPostPage = () => {
   };
   return (
     <div>
-      <h2 className="text-2xl font-medium">New Post Page</h2>
+      <h2 className="text-2xl font-medium">Edit Post Page</h2>
       <div>
         <Form {...form}>
           <form
@@ -118,7 +130,7 @@ const NewPostPage = () => {
               )}
             />
 
-            <Button isLoading={form.formState.isSubmitting} className="btn-primary mt-4">Create Post</Button>
+            <Button isLoading={form.formState.isSubmitting} className="btn-primary mt-4">Update Post</Button>
           </form>
         </Form>
       </div>
@@ -127,4 +139,4 @@ const NewPostPage = () => {
   );
 };
 
-export default NewPostPage;
+export default EditPostPage;

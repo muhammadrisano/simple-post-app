@@ -1,4 +1,6 @@
-"use client"
+"use client";
+import React from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/attoms";
 import Input from "@/components/attoms/input";
 import { loginSchema, LoginSchema } from "@/utils/schema/auth";
@@ -12,9 +14,19 @@ import {
   FormField,
   FormItem,
   FormMessage,
+  Modal,
 } from "@/components/molecules";
+import { ModalProps } from "@/components/molecules/Modal";
+import { sessionLogin } from "@/app/actions";
 
 const SigninPage = () => {
+  const router = useRouter();
+  const [modal, setModal] = React.useState<ModalProps>({
+    title: "",
+    description: "",
+    btnName: "",
+    btnShow: false,
+  });
   const form = useForm<LoginSchema>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -23,11 +35,24 @@ const SigninPage = () => {
     },
   });
   const submitForm = async (data: LoginSchema) => {
-    const result = await login(data);
-    if (result.success) {
-      alert("success");
-    } else {
-      alert(result.error);
+    try {
+      await login(data);
+      await sessionLogin();
+      router.push("/dashboard");
+    } catch (error) {
+       let errorDescription = ''
+         if (error instanceof Response) {
+         const resError = await error.json() as { message: string };
+         errorDescription = resError.message
+         
+       }
+         setModal({
+        title: "Login Fail",
+        description: errorDescription || "Terjadi kesalahan saat login",
+        btnName: "Close",
+        btnShow: true
+      });
+      (document.getElementById('my_modal') as HTMLDialogElement)?.showModal()
     }
   };
   return (
@@ -38,39 +63,50 @@ const SigninPage = () => {
           className="pt-6 flex flex-col gap-3"
           onSubmit={form.handleSubmit(submitForm)}
         >
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl className="space-y-1">
-                    <Input placeholder="Email" type="email" label="Email" {...field} />
-                  </FormControl>
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem>
+                <FormControl className="space-y-1">
+                  <Input
+                    placeholder="Email"
+                    type="email"
+                    label="Email"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field }) => (
+              <FormItem>
+                <FormControl className="space-y-1">
+                  <Input
+                    placeholder="Password"
+                    type="password"
+                    label="Password"
+                    {...field}
+                  />
                   <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl className="space-y-1">
-                    <Input placeholder="Password" type="password" label="Password" {...field} />
-                    <FormMessage />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
+                </FormControl>
+              </FormItem>
+            )}
+          />
           <p className="text-sm">
             Dont have an account?{" "}
             <Link href="/signup" className="text-primary">
               Signup
             </Link>
           </p>
-          <Button className="btn-primary mt-4 w-ful">Login</Button>
+          <Button isLoading={form.formState.isSubmitting} className="btn-primary mt-4 w-ful">Login</Button>
         </form>
       </Form>
+      <Modal id="my_modal" {...modal} />
     </div>
   );
 };

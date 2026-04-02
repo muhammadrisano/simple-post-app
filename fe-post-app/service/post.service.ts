@@ -1,4 +1,4 @@
-import { fetchData, postData } from "@/utils/fetch-adapter"
+import { deleteData, fetchData, postData, putData } from "@/utils/fetch-adapter"
 import { Category } from "./category.service"
 
 export interface Post {
@@ -17,6 +17,18 @@ export const getPosts = async (params = {}) => {
     return fetchData('api/posts', params)
 }
 
-export const createPost = async (payload: Pick<Post, 'title' | 'description' > & {category_id: number}) => {
+export const createPost = async (payload: Pick<Post, 'title' | 'description' > & {category_id: number| string}) => {
     return postData('api/posts', payload)
+}
+
+export const getPostDetails = async (slug: string) => {
+    return fetchData(`api/posts/${slug}`)
+}
+
+export const updatePost = async (id: number, payload: Pick<Post, 'title' | 'description' > & {category_id: number| string}) => {
+    return putData(`api/posts/${id}`, payload)
+}
+
+export const deletePost = async (id: string) => {
+    return deleteData(`api/posts/${id}`)
 }

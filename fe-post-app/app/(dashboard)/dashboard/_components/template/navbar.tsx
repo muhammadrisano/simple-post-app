@@ -1,5 +1,6 @@
 import React from "react";
 import { Columns2 } from "lucide-react";
+import MenuLogout from "./menu-logout";
 
 const navbar = () => {
   return (
@@ -11,7 +12,10 @@ const navbar = () => {
       >
         <Columns2 size={20} />
       </label>
-      <div className="px-4">Navbar Title</div>
+      <div className="px-4">
+        <div></div>
+        <MenuLogout />
+      </div>
     </nav>
   );
 };

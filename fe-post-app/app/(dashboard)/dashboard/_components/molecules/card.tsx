@@ -19,7 +19,7 @@ const card = ({data, className, ...props}:CardProps) => {
       <div className="card-body">
         <h2 className="card-title">{data.title}</h2>
         <p>
-         {data.title}
+         {data.description}
         </p>
         <div className="card-actions justify-end">
           <Link href={`/dashboard/post/${data.slug}`} className="btn btn-primary">Show</Link>

@@ -4,22 +4,18 @@ import { Button } from "../attoms";
 export interface ModalProps extends React.ComponentProps<"dialog"> {
   title: string;
   description?: string;
-  type?: 'alert' | 'confirm';
   btnName?: string;
   btnShow?: boolean;
   onClick?: () => void;
   ref?: React.ForwardedRef<HTMLDialogElement>;
   id?: string;
-  isLoading?: boolean
 }
 const Modal = ({
   title,
   description,
   onClick,
   btnName,
-  type = 'alert',
   btnShow = true,
-  isLoading=false,
   ...props
 }: ModalProps) => {
   return (
@@ -33,7 +29,7 @@ const Modal = ({
         </form>
         <h3 className="font-bold text-lg text-center">{title}</h3>
         {description && <p className="py-4 text-center">{description}</p>}
-        {(type === 'alert' && btnShow) &&
+        {btnShow &&
           (onClick ? (
             <Button className="btn-primary px-5" onClick={onClick}>
               {btnName || "Close"}
@@ -43,16 +39,6 @@ const Modal = ({
               <Button className="btn-primary px-5"> Close</Button>
             </form>
           ))}
-          {type === 'confirm' && (
-            <div className="flex gap-3">
-              <Button isLoading={isLoading} className="btn-primary px-5" onClick={onClick}>
-                {btnName || "Yes"}
-              </Button>
-              <form method="dialog">
-              <Button className="btn-primary btn-outline px-5"> Close</Button>
-              </form>
-            </div>
-          )} 
       </div>
     </dialog>
   );

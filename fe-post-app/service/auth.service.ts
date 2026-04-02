@@ -1,30 +1,15 @@
 
-import {fetchCsrfCookie, postData} from '../utils/fetch-adapter'
-const getCookieValue = (name: string) => {
-  const value = `; ${document.cookie}`;
-  const parts = value.split(`; ${name}=`);
-  if (parts.length === 2) return parts.pop()?.split(';').shift()?.replace("%3D", "");
-};
-export const login = async(payload: {email: string, password: string}) => {
-   await fetchCsrfCookie()
-    const csrfToken = getCookieValue('XSRF-TOKEN');
-   return postData('api/login', payload, {
-      headers: {
-        'X-XSRF-TOKEN': csrfToken || '',
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      },
-   })
+import { postData} from '../utils/fetch-adapter'
+
+export const login = (payload: {email: string, password: string}) => {
+ 
+   return postData('api/login', payload)
 };
 
-export const register = async(payload: {name: string, email: string, password: string}) => {
-   await fetchCsrfCookie()
-    const csrfToken = getCookieValue('XSRF-TOKEN');
-   return postData('api/register', payload, {
-      headers: {
-        'X-XSRF-TOKEN': csrfToken || '',
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      },
-   })
+export const register = (payload: {name: string, email: string, password: string}) => {
+   return postData('api/register', payload)
+};
+
+export const logout = () => {
+   return postData('api/logout', {})
 };

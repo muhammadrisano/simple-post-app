@@ -18,16 +18,15 @@ import React from "react";
 import { useRouter } from "next/navigation";
 import { ModalProps } from "@/components/molecules/Modal";
 
-
 const SignupPage = () => {
-    const router = useRouter()
-    const [modal, setModal] = React.useState<ModalProps>({
-        title: "",
-        description: "",
-        btnName: "",
-        btnShow: false,
-    })
-    // const modalRef = React.useRef<HTMLDialogElement>(null);
+  const router = useRouter();
+  const [modal, setModal] = React.useState<ModalProps>({
+    title: "",
+    description: "",
+    btnName: "",
+    btnShow: false,
+  });
+  // const modalRef = React.useRef<HTMLDialogElement>(null);
   const form = useForm<RegisterSchema>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
@@ -35,33 +34,35 @@ const SignupPage = () => {
       email: "",
       password: "",
     },
-    
   });
   const submitForm = async (data: RegisterSchema) => {
     try {
-        await register(data);
-         setModal({
+      await register(data);
+      setModal({
         title: "Register Success",
         description: "Silahkan Login untuk melanjutkannya",
         btnName: "Close",
         btnShow: true,
-        onClick: () => router.push('/signin')
+        onClick: () => router.push("/signin"),
       });
-      (document.getElementById('my_modal') as HTMLDialogElement)?.showModal()
-    
+      (document.getElementById("my_modal") as HTMLDialogElement)?.showModal();
     } catch (error) {
-        console.log(error);
-         setModal({
+       let errorDescription = ''
+         if (error instanceof Response) {
+         const resError = await error.json() as { message: string };
+         errorDescription = resError.message
+         
+       }
+      setModal({
         title: "Register Fail",
-        description: "Silahkan Coba Kembali",
+        description: errorDescription || "Terjadi kesalahan saat login",
         btnName: "Close",
-        btnShow: true
+        btnShow: true,
       });
-      (document.getElementById('my_modal') as HTMLDialogElement)?.showModal()
+      (document.getElementById("my_modal") as HTMLDialogElement)?.showModal();
     }
-
   };
-  
+
   return (
     <div className="bg-base-200 border-base-300 rounded-box w-xs border p-6">
       <h2 className="text-lg">Login Page</h2>
@@ -122,11 +123,11 @@ const SignupPage = () => {
               Signin
             </Link>
           </p>
-          <Button className="btn-primary mt-4 w-ful">Register</Button>
+          <Button isLoading={form.formState.isSubmitting} className="btn-primary mt-4 w-ful">Register</Button>
         </form>
       </Form>
-      
-      <Modal id="my_modal" {...modal}/>
+
+      <Modal id="my_modal" {...modal} />
     </div>
   );
 };

@@ -1,5 +1,6 @@
-'use client' // Error boundaries must be Client Components
+'use client'
  
+// import { stringifyError } from 'next/dist/shared/lib/utils'
 import { useEffect } from 'react'
  
 export default function ErrorPage({
@@ -11,7 +12,7 @@ export default function ErrorPage({
 }) {
   useEffect(() => {
     // Log the error to an error reporting service
-    console.error(error)
+    console.log(JSON.stringify(error))
   }, [error])
  
   return (

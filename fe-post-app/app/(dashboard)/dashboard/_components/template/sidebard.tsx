@@ -5,7 +5,7 @@ import Link from "next/link";
 const SIDEBAR_MENU = [
   {
     name: "Post",
-    href: "/dashboard/post",
+    href: "/dashboard",
     icon: <Newspaper size={20} />,
   },
   {
