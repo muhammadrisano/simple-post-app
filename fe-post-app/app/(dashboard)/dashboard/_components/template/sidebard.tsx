@@ -6,12 +6,12 @@ const SIDEBAR_MENU = [
   {
     name: "Post",
     href: "/dashboard/post",
-    icon: <Newspaper />,
+    icon: <Newspaper size={20} />,
   },
   {
     name: "Setting",
     href: "/dashboard/setting",
-    icon: <Settings2 />,
+    icon: <Settings2 size={20} />,
   },
 ];
 
@@ -23,7 +23,7 @@ const sidebard = () => {
         <li key={index}>
           <Link
             href={item.href}
-            className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
+            className="is-drawer-close:tooltip is-drawer-close:tooltip-right py-4"
             data-tip="Homepage"
           >
             {/* Home icon */}
