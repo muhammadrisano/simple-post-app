@@ -1,0 +1,63 @@
+#frontend
+/fe-post-app/node_modules
+/fe-post-app/.pnp
+/fe-post-app/.pnp.*
+/fe-post-app/.yarn/*
+
+
+# testing
+/fe-post-app/coverage
+
+# next.js
+/fe-post-app/.next/
+/fe-post-app/out/
+
+# production
+/fe-post-app/build
+
+# misc
+/fe-post-app/.DS_Store
+/fe-post-app/*.pem
+
+# debug
+/fe-post-app/npm-debug.log*
+/fe-post-app/yarn-debug.log*
+/fe-post-app/yarn-error.log*
+/fe-post-app/.pnpm-debug.log*
+
+# env files (can opt-in for committing if needed)
+/fe-post-app/.env*
+
+# vercel
+/fe-post-app/.vercel
+
+# typescript
+/fe-post-app/*.tsbuildinfo
+/fe-post-app/next-env.d.ts
+
+# backend
+
+/be-post-app/*.log
+/be-post-app/.DS_Store
+/be-post-app/.env
+/be-post-app/.env.backup
+/be-post-app/.env.production
+/be-post-app/.phpactor.json
+/be-post-app/.phpunit.result.cache
+/be-post-app/.fleet
+/be-post-app/.idea
+/be-post-app/.nova
+/be-post-app/.phpunit.cache
+/be-post-app/.vscode
+/be-post-app/.zed
+/be-post-app/auth.json
+/be-post-app/node_modules
+/be-post-app/public/build
+/be-post-app/public/hot
+/be-post-app/public/storage
+/be-post-app/storage/*.key
+/be-post-app/storage/pail
+/be-post-app/vendor
+/be-post-app/Homestead.json
+/be-post-app/Homestead.yaml
+/be-post-app/Thumbs.db
