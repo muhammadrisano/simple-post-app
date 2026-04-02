@@ -47,8 +47,11 @@ NEXT_PUBLIC_API_URL= YOUR_API_URL
 ## Documentasi
 - Postman Collection
 https://documenter.getpostman.com/view/7675329/2sBXiomVQj
-- Link Deploy
-http://mini-notion.risano.cloud (maaf kak ini masih progress untuk besok)
+
+
+## Noted
+- Backend
+* menggunakan Laravel Sanctum dan perlu menjadilan kan migration dan seeder (untuk mengisi record di table post_category)
 
 
 
