@@ -12,13 +12,16 @@ use Illuminate\Support\Facades\Route;
 // auth
 Route::post('/register', RegisterController::class);
 Route::post('/login', LoginController::class);
-Route::post('/logout', LogoutController::class)->middleware('auth:sanctum');
+// Route::post('/logout', LogoutController::class)->middleware('auth:sanctum');
+Route::group(['middleware' => ['web', 'auth:sanctum']], function () {
+    Route::post('/logout', LogoutController::class);
+});
 
 // post categories
 Route::apiResource('/post-categories', PostCategoryController::class);
 
 // posts
-Route::apiResource('/posts', PostController::class)->middleware('auth:sanctum');
+Route::apiResource('/posts', PostController::class)->middlewareFor(['store','update','destroy'],'auth:sanctum');
 
 
 Route::get('/user', function (Request $request) {
