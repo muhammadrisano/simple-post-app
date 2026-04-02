@@ -16,3 +16,15 @@ export const login = async(payload: {email: string, password: string}) => {
       },
    })
 };
+
+export const register = async(payload: {name: string, email: string, password: string}) => {
+   await fetchCsrfCookie()
+    const csrfToken = getCookieValue('XSRF-TOKEN');
+   return postData('api/register', payload, {
+      headers: {
+        'X-XSRF-TOKEN': csrfToken || '',
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+   })
+};
